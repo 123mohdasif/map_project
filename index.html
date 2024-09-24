@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicle Tracker with Leaflet</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    let map;
+    let vehicleMarker;
+    let positionIndex = 0;
+
+    // Example coordinates for vehicle movement
+    const vehiclePath = [
+      { lat: 17.385044, lng: 78.486671 },
+      { lat: 17.385045, lng: 78.486672 },
+      { lat: 17.385046, lng: 78.486673 },
+      { lat: 17.385047, lng: 78.486674 },
+      { lat: 17.385048, lng: 78.486675 }
+    ];
+
+    function initMap() {
+      // Initialize the map
+      map = L.map('map').setView([17.385044, 78.486671], 15);
+
+      // Set up OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
+
+      // Create a vehicle marker
+      vehicleMarker = L.marker([17.385044, 78.486671]).addTo(map);
+
+      console.log("Map and marker initialized");
+
+      // Start moving the vehicle
+      moveVehicle();
+    }
+
+    function moveVehicle() {
+      // Update the vehicle's position every 2 seconds
+      setInterval(() => {
+        if (positionIndex < vehiclePath.length) {
+          console.log(`Moving to position: ${vehiclePath[positionIndex].lat}, ${vehiclePath[positionIndex].lng}`);
+          
+          // Update the marker's position
+          vehicleMarker.setLatLng([vehiclePath[positionIndex].lat, vehiclePath[positionIndex].lng]);
+          
+          positionIndex++; // Move to the next position
+        } else {
+          positionIndex = 0; // Reset to the beginning if the end is reached
+          console.log("Resetting to the beginning of the path");
+        }
+      }, 2000); // Adjust interval time (in milliseconds) as needed
+    }
+
+    window.onload = initMap; // Initialize the map after the page loads
+  </script>
+</body>
+</html>
